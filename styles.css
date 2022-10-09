@@ -73,6 +73,8 @@ body {
 }
 #errorMessage {
   color: red;
+  outline: 1px solid #be1b1b;
+  
 }
 .d-none {
   display: none;
