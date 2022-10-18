@@ -9,14 +9,19 @@ const email = document.querySelector('#email');
 const password = document.querySelector('#password');
 const repeatPassword = document.querySelector('#repeatPassword');
 
-// --------------------- USER OBJECT ---------------------
-// For storing the user information recived from the form
+// --------------------- USER CLASS ---------------------
 
-const user = {
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: ''
+class User {
+    constructor(firstName, lastName, email, password) {
+        this.firstName = firstName
+        this.lastName = lastName
+        this.email = email
+        this.password = password
+    }
+
+    userInfo() {
+        return `Firstname: ${this.firstName} | Lastname: ${this.lastName} | Email: ${this.email} | Password: ${this.password}`
+    }
 }
 
 // --------------------- VALIDATION ---------------------
@@ -25,20 +30,25 @@ const user = {
 const validateText = (id) => {
     const input = document.querySelector(id)
 
+    // Om input är tom = error
     if(input.value.trim() === '') {
         console.log(input.id + ' is empty');
-        return setError(input)
+        return error(input)
        
+    // Om input är mindre än två = error
     } else if(input.value.length < 2) {
         console.log(input.id + ' length is less than 2');
-        return setError(input)
+        return error(input)
 
+    // Om input innehåller nummer = error
     } else if(/\d/.test(input.value)) {
         console.log(input.id + ' contains a number');
-        return setError(input)
-    
-    } else {
-        return setSuccess(input)
+        return error(input)
+    }
+
+    // Annars, inga fel = Success
+    else {
+        return success(input)
     }
 }
 
@@ -49,14 +59,14 @@ const validateEmail = (id) => {
     const regEx = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,6}$/
 
     if(email.value.trim() === '') {
-        return setError(email)
-        
-    }
-    else if(!regEx.test(email.value)) {
-        return setError(email)
-    }
-    else {
-        return setSuccess(email)
+        console.log(email.id + ' is empty');
+        return error(email)    
+
+    } else if(!regEx.test(email.value)) {
+        return error(email)
+
+    } else {
+        return success(email)
     }
 } 
 
@@ -65,18 +75,20 @@ const validatePassword = (id) => {
     const input = document.querySelector(id)
 
     if(input.value.trim() === '') {
-        return setError(input)
+        console.log(input.id + ' is empty');
+        return error(input)
        
     } else if(input.value.length < 6) {
-        return setError(input)
+        console.log(input.id + ' is less than 6');
+        return error(input)
 
     } else if(password.value !== repeatPassword.value){
-            return setError(repeatPassword)
+        console.log('Passwords do not match');
+        return error(repeatPassword)
 
     } else {
-        return setSuccess(input)
-    }        
-               
+        return success(input)
+    }               
 }
 
 // VALIDATE CHECKBOX
@@ -85,25 +97,25 @@ const validateCheck = (id) => {
 
     // If checkbox is not checked = checkbox error
     if(!checkbox.checked) {
-        return setError(checkbox)
+        return error(checkbox)
     }
     // If checkbox is checked = checkbox success
     else {
-        return setSuccess(checkbox)
+        return success(checkbox)
     }
 }
 
-// --------------------- setSUCCESS & ERROR ---------------------
+// --------------------- SUCCESS & ERROR ---------------------
 
 // SUCCESSFUL INPUT
-const setSuccess = (input) => {
-    console.log('Successful value for id: ' + input.id)
+const success = () => {
+    // Return true value
     return true;
 }
 
 // ERROR INPUT
-const setError = (input) => {
-    // logs where the error is located
+const error = (input) => {
+    // Console.log error location + return false value
     console.log('No valid input value for id: ' + input.id)
     return false;
 }
@@ -115,31 +127,30 @@ form.addEventListener('submit', e => {
     //Prevent the browser to reload
     e.preventDefault()
      
-    // ARRAY FOR STOREING ERRORS
+    // Error storage array
     const errors = [];
 
-    //CHECK THE INPUTS FROM THE FORM FOR ERRORS
+    // Check for errors in the form inputs
     for(let i = 0; i < form.length; i++) {
 
         // Declairs the input variable and takes each input of the form and adds a # 
         // to give the variable "input" the value of the current id to be validated
         const input = '#' + form[i].id
 
-        // CHECK INPUT TYPES AND CALLS APPROPRIATE VALIDATION
-
-         // if type text = validate password and return true or false to the errors array
+        // Check input type, call appropriate validation function and pass in the input
+         // if type text = validate password function and return true or false to the errors array
         if(form[i].type === 'text') {
             errors[i] = validateText(input)
         } 
-         // if type email = validate email and return true or false to the errors array
+         // if type email = validate email function and return true or false to the errors array
         else if(form[i].type === 'email') {
             errors[i] = validateEmail(input)
         }
-         // if type checkbox = validate checkbox and return true or false to the errors array
+         // if type checkbox = validate checkbox function and return true or false to the errors array
         else if(form[i].type === 'checkbox') {
             errors[i] = validateCheck(input)
         }
-        // if type password = validate password and return true or false to the errors array
+        // if type password = validate password function and return true or false to the errors array
         else if(form[i].type === 'password') {
             errors[i] = validatePassword(input)
         }
@@ -147,29 +158,30 @@ form.addEventListener('submit', e => {
 
     // --------------------- HANDLING ERRORS AND SUCCESS ---------------------
 
-    // If any errors
-    // If the errors array contains any false values
+    // ERROR
+    // If the errors array contains any false value = error
     if(errors.includes(false)) {
-        console.log('Error | Showing error message | false = not a valid input');
+        console.log('Error array contains false | false = not a valid input');
+        // Console log the errors array, false value = error
         console.log(errors);
+        // Display error message by removing the d-none class from errorMessage
         errorMessage.classList.remove('d-none');
     
-    // If no errors
+    // SUCCESS
+    // If errors array contains only true values = success
     } else {
+        // Console success message
         console.log('Success!')
         console.log('formuläret är korrekt ifyllt - lagrar informationen i user object')
 
-        // Remove error message
+        // Remove error message by adding the d-none class to errorMessage
         errorMessage.classList.add('d-none');
 
-        //Add form info to the user object
-        user.firstName = firstName.value;
-        user.lastName = lastName.value;
-        user.email = email.value;
-        user.password = password.value;
-        
-        // Prints out the user info from the object
-        console.log('The object: "user" now contains: ' + JSON.stringify(user));
+        // Create a new instance of the User class with the values of the form input
+        const user = new User(firstName.value, lastName.value, email.value, password.value);
+
+        // Prints out the user info from the user object
+        console.log(user.userInfo());
         console.log('Redo att skicka till databasen')
 
     }      
