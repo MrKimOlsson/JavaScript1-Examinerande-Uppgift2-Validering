@@ -6,7 +6,6 @@ const lastName = document.querySelector('#lastName');
 const email = document.querySelector('#email');
 const password = document.querySelector('#password');
 const repeatPassword = document.querySelector('#repeatPassword');
-const repeatPassError = document.querySelector('#repeatPassError');
 
 // --------------------- USER CLASS ---------------------
 
