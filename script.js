@@ -52,7 +52,7 @@ const validateText = (id) => {
 // VALIDATE EMAIL
 const validateEmail = (id) => {
     const email = document.querySelector(id)
-    // const regEx = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,6}$/;
+    
     const regEx = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
     if(email.value.trim() === '') {
